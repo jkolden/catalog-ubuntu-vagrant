@@ -55,7 +55,7 @@ class Items(Base):
         }
 
 
-engine = create_engine('sqlite:///sportingequipment.db')
+engine = create_engine('postgresql:///sportingequipment')
 
 
 Base.metadata.create_all(engine)
