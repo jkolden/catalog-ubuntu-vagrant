@@ -149,8 +149,6 @@ We don't have to care about local login to the machine because we cannot do it f
 ### Create environment for Flask app
 1. Put Item Catalog app under `/var/www`
     - `cd /var/www/`
-    - `sudo mkdir catalog`
-    - `cd catalog/`
     - Clone this git repo: `sudo git clone https://github.com/jkolden/catalog-ubuntu-vagrant.git`
 
 2. Install Flask in virtual environment by pip
@@ -173,7 +171,6 @@ We don't have to care about local login to the machine because we cannot do it f
     - `cd /var/www/catalog/catalog`
     - `python database_setup1.py`
     - `python categories.py`
-
 
 ### Apache and wsgi
 1. Install Apache
