@@ -107,7 +107,7 @@ Modify sshd configuration so that sshd observes the port 2200.
     - `chmod 700 ~/.ssh`
     - `chmod 600 ~/.ssh/authorized_keys`
 5. Test you can login as `grader` by ssh on port 2200
-    - `ssh grader@18.236.198.135 -p 2200 -i ~/.ssh/item-catalog-grader`
+    - `ssh grader@18.236.198.135 -p 2200 -i ~/.ssh/grader_key`
 
 ### Add Google OAuth origin to the project on the Google Cloud Console
 1. Add the URL `http://ec2-18-236-198-135.us-west-2.compute.amazonaws.com/` to authorized Javascript Origins and Authorized redirect URIs 
