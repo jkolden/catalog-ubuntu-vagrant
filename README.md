@@ -106,7 +106,7 @@ Modify sshd configuration so that sshd observes the port 2200.
 
 ### User authentication
 #### Disable password-based login
-- Change `PasswordAuthentication` to `no`
+- Change `PasswordAuthentication` to `no` and make sure `PubkeyAuthentication` is `yes`
     - `sudo nano /etc/ssh/sshd_config`
     - `sudo service ssh restart`
 
@@ -124,7 +124,8 @@ We don't have to care about local login to the machine because we cannot do it f
     - `sudo adduser grader`
 2. Give the user "grader" sudo access
     - `sudo nano /etc/sudoers.d/grader`
-        - The content: `grader ALL=(ALL) NOPASSWD:ALL`
+        - The content: `grader ALL=(ALL:ALL) ALL`
+        - **The grader user will have a password of "grader" when performing sudo commands.**   
 3. Generate ssh key pair for `grader` on the client
     - `cd ~/.ssh`
     - `ssh-keygen`
@@ -215,16 +216,16 @@ import logging
 logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0,"/var/www/catalog/")
 from catalog.application import app as application
-application.secret_key = 'some_secret_key'
+application.secret_= 'some_secret_key'
 ```
 7. Restart Apache
     - `sudo service apache2 restart`
 8. Navigate to http://ec2-18-236-198-135.us-west-2.compute.amazonaws.com/. Test login and adding categories/items.
 
 ## Third-party references
-- [How to configure UFW to allow ntp to work?](https://askubuntu.com/questions/709843/how-to-configure-ufw-to-allow-ntp-to-work)
-- [Time Synchronisation with NTP](https://help.ubuntu.com/lts/serverguide/NTP.html)
-- [How To Deploy a Flask Application on an Ubuntu VPS](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
-- [mod_wsgi (Apache)](http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi/)
+- [DNS Lookup](http://www.kloth.net/services/nslookup.php)
+- [How to deplay a Flask app - Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+- [How to install Postgresql on Ubuntu - Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 - [Engine Configuration¶](http://docs.sqlalchemy.org/en/latest/core/engines.html)
 - [PostgreSQL](http://docs.sqlalchemy.org/en/latest/dialects/postgresql.html#module-sqlalchemy.dialects.postgresql.psycopg2)
+- [Great readme by RR Joson](https://github.com/rrjoson/udacity-linux-server-configuration)
