@@ -144,7 +144,7 @@ Modify sshd configuration so that sshd observes the port 2200.
     - `sudo apt-get install apache2`
     
 2. Set up Apache config for Item Catalog app
-    - `sudo emacs /etc/apache2/sites-available/catalog.conf`
+    - `sudo nano /etc/apache2/sites-available/catalog.conf`
 ```xml
 <VirtualHost *:80>
     ServerName 18.236.198.135.xip.io
