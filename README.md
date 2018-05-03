@@ -33,39 +33,20 @@ Login to Amazon Lightsail's machine only by the browser-based terminal window.
     - `ssh ubuntu@18.236.198.135 -p 22 -i ~/.ssh/udacity.pem`
 
 ### Firewall Configuration
-The machine seems to have two firewalls, the firewall controlled on the Lightsail's console page, and ufw.
-
-#### Amazon Lightsail's firewall
-Open 123 for ntp and 2200 for ssh.
-Remain 22 open temporarily so as to keep ssh connections through 22.
-The table is modified like the following:
-
-| Application | Protocol | Port range|
-|:--|:--|:--|
-| SSH | TCP | 22 |
-| HTTP | TCP | 80 |
-| Custom | TCP | 123 |
-| Custom | TCP | 2200 |
 
 #### ufw
-Open 22, 80, 123, 2200.
+Open 80, 123, 2200.
 
 1. Ensure that the firewall is currently disabled
     - `sudo ufw status`
-2. Deny all incoming data and allow all outgoing data by default
-    - `sudo ufw default deny incoming`
-    - `sudo ufw default allow outgoing`
-3. Allow ssh to use the port 22 temporarily
-    - `sudo ufw allow ssh`
-4. Allow http to use the port 80
-    - `sudo ufw allow www`
+2. Allow http to use the port 80
+    - `sudo ufw allow 80`
 5. Allow ntp to use the port 123
-    - `sudo ufw allow ntp`
+    - `sudo ufw allow 123`
 6. Allow ssh to use the port 2200
     - `sudo ufw allow 2200/tcp`
 7. Enable the firewall
     - `sudo ufw enable`
-    - If the configuration is correct, ssh connection is not broken
 8. Check the firewall is configured properly
     - `sudo ufw status`
         - Confirm that only 22, 80, 123, 2200 are open
@@ -78,31 +59,21 @@ Modify sshd configuration so that sshd observes the port 2200.
 2. Restart sshd
     - `sudo service sshd restart`
 3. Confirm we cannot login by the old port 22
-    - `ssh ubuntu@18.236.198.135 -p 22 -i ~/.ssh/udacity`
+    - `ssh ubuntu@18.236.198.135 -p 22 -i ~/.ssh/udacity.pem`
 3. Re-login by new port 2200
-    - `ssh ubuntu@18.236.198.135 -p 2200 -i ~/.ssh/udacity`
+    - `ssh ubuntu@18.236.198.135 -p 2200 -i ~/.ssh/udacity.pem`
 
 #### Close port 22
 1. Let ufw deny port 22
     - `sudo ufw deny ssh`
-2. Reload ufw configuration
-    - `sudo ufw reload`
+2. Enable the firewall
+    - `sudo ufw enable`
 3. Check port 22 is successfully denied
     - `sudo ufw status`
-4. Remove ssh/22 from the firefall on Lightsail's console page
-    - After that, the table should look like the following:
-
-| Application | Protocol | Port range|
-|:--|:--|:--|
-| HTTP | TCP | 80 |
-| Custom | TCP | 123 |
-| Custom | TCP | 2200 |
-
 
 ### Install most recent software
      `sudo apt-get update`
      `sudo apt-get upgrade`
-
 
 ### User authentication
 #### Disable password-based login
@@ -115,10 +86,6 @@ Modify sshd configuration so that sshd observes the port 2200.
     - `sudo nano /etc/ssh/sshd_config`
     - `sudo service ssh restart`
 
-This configuration disables login as `root` regardless whether it's remote or local login.
-We don't have to care about local login to the machine because we cannot do it for cloud instances.
-
-
 #### Create new user `grader`
 1. Create new user "grader"
     - `sudo adduser grader`
@@ -129,8 +96,8 @@ We don't have to care about local login to the machine because we cannot do it f
 3. Generate ssh key pair for `grader` on the client
     - `cd ~/.ssh`
     - `ssh-keygen`
-        - I named key pair "grader_key"
-4. Pass the server the generated public key
+    - I named my key pair `grader_key`
+4. Load the generated public key to the ubuntu server
     - `sudo su - grader`
     - `mkdir ~/.ssh`
     - `touch ~/.ssh/authorized_keys`
@@ -139,16 +106,15 @@ We don't have to care about local login to the machine because we cannot do it f
         - Paste the pub's content above
     - `chmod 700 ~/.ssh`
     - `chmod 600 ~/.ssh/authorized_keys`
-5. Test you can login as `grader` by ssh **on the client-side**.
+5. Test you can login as `grader` by ssh on port 2200
     - `ssh grader@18.236.198.135 -p 2200 -i ~/.ssh/item-catalog-grader`
 
-### Add Google OAuth origin
+### Add Google OAuth origin to the project on the Google Cloud Console
 1. Add the URL `http://ec2-18-236-198-135.us-west-2.compute.amazonaws.com/` to authorized Javascript Origins and Authorized redirect URIs 
 2. Download new client_secrets.json and replace the old one. In my case I had already clones my git repo so I made this change via sudo nano on the ubuntu server.
 
-
 ### Create environment for Flask app
-1. Put Item Catalog app under `/var/www`
+1. Put Catalog app under `/var/www`
     - `cd /var/www/`
     - Clone this git repo: `sudo git clone https://github.com/jkolden/catalog-ubuntu-vagrant.git`
 
@@ -160,7 +126,7 @@ We don't have to care about local login to the machine because we cannot do it f
     - `source venv/bin/activate`
     - `sudo pip install Flask sqlalchemy oauth2client requests psycopg2`
 
-### Add Posgresql user and DB for the Catalog app
+### Add Posgresql user and database for the Catalog app
 
 1. Change the user to `postgres`
     - `sudo su - postgres`
@@ -220,7 +186,8 @@ application.secret_= 'some_secret_key'
 ```
 7. Restart Apache
     - `sudo service apache2 restart`
-8. Navigate to http://ec2-18-236-198-135.us-west-2.compute.amazonaws.com/. Test login and adding categories/items.
+8. Navigate to http://ec2-18-236-198-135.us-west-2.compute.amazonaws.com/. 
+- Test login and adding categories/items.
 
 ## Third-party references
 - [DNS Lookup](http://www.kloth.net/services/nslookup.php)
